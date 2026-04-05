@@ -1,0 +1,1 @@
+DELETE FROM roles WHERE role_name IN ('viewer', 'analyst', 'admin');
