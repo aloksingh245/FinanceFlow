@@ -11,28 +11,19 @@ const v1Router = express.Router();
 
 v1Router.get('/health', async (req, res) => {
   let dbStatus = 'unknown';
-  let dbError = null;
-  let dbStack = null;
   try {
     await pool.query('SELECT NOW()');
     dbStatus = 'connected';
   } catch (err) {
     dbStatus = 'error';
-    dbError = err.message;
-    dbStack = err.stack;
   }
   
-  const env = require('../config/env');
   res.json({
     success: true,
     data: {
       version: '1.0.0',
       status: 'ok',
       db: dbStatus,
-      dbError,
-      dbStack,
-      env: process.env.NODE_ENV,
-      maskedDbUrl: env.DATABASE_URL ? env.DATABASE_URL.replace(/:[^:@]+@/, ':***@') : 'missing',
       timestamp: new Date().toISOString()
     }
   });
