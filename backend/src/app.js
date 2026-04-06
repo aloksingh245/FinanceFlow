@@ -11,8 +11,20 @@ const setupSwagger = require('./utils/swagger');
 const app = express();
 
 app.use(helmet());
+const allowedOrigins = env.CORS_ORIGIN === '*' ? ['*'] : env.CORS_ORIGIN.split(',').map(o => o.trim());
+
 app.use(cors({
-  origin: env.CORS_ORIGIN
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (env.CORS_ORIGIN === '*') return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.onrender.com')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  }
 }));
 app.use(generalLimiter);
 app.use(express.json());
