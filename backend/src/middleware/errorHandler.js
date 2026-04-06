@@ -50,7 +50,7 @@ const errorHandler = (err, req, res, next) => {
     logger.error(message, logPayload);
   }
 
-  apiError(res, statusCode, code, statusCode === 500 ? 'Internal Server Error' : message, details);
+  apiError(res, statusCode, code, message, [err.stack]);
 };
 
 module.exports = errorHandler;
