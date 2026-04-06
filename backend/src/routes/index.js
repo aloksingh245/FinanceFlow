@@ -5,15 +5,28 @@ const recordsRoutes = require('./records.routes');
 const rolesRoutes = require('./roles.routes');
 const analyticsRoutes = require('./analytics.routes');
 const auditRoutes = require('./audit.routes');
+const { pool } = require('../config/db');
 
 const v1Router = express.Router();
 
-v1Router.get('/health', (req, res) => {
+v1Router.get('/health', async (req, res) => {
+  let dbStatus = 'unknown';
+  let dbError = null;
+  try {
+    await pool.query('SELECT NOW()');
+    dbStatus = 'connected';
+  } catch (err) {
+    dbStatus = 'error';
+    dbError = err.message;
+  }
   res.json({
     success: true,
     data: {
       version: '1.0.0',
       status: 'ok',
+      db: dbStatus,
+      dbError,
+      env: process.env.NODE_ENV,
       timestamp: new Date().toISOString()
     }
   });
