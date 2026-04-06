@@ -10,7 +10,7 @@ const setupSwagger = require('./utils/swagger');
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const allowedOrigins = env.CORS_ORIGIN === '*' ? ['*'] : env.CORS_ORIGIN.split(',').map(o => o.trim());
 
 app.use(cors({
