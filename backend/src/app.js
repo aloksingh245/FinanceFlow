@@ -26,6 +26,12 @@ app.use(cors({
     return callback(new Error('Not allowed by CORS'));
   }
 }));
+
+// Allow browser DevTools to read network timing data for cross-origin requests
+app.use((req, res, next) => {
+  res.setHeader('Timing-Allow-Origin', '*');
+  next();
+});
 app.use(generalLimiter);
 app.use(express.json());
 
