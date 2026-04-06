@@ -2,9 +2,15 @@ const { Pool } = require('pg');
 const env = require('./env');
 const logger = require('../utils/logger');
 
-const pool = new Pool({
+const poolConfig = {
   connectionString: env.DATABASE_URL,
-});
+};
+
+if (env.NODE_ENV === 'production') {
+  poolConfig.ssl = { rejectUnauthorized: false };
+}
+
+const pool = new Pool(poolConfig);
 
 pool.on('connect', () => {
   logger.info('PostgreSQL connection established');
